@@ -1,0 +1,29 @@
+Public String getSimpleFileName(String longName){
+
+String[] sightComponents = longName.split("/");
+String nameWithExt = sightComponents[sightComponents.length - 1];
+mSightName = nameWithExt.replace(".jpg", "”); // fix this
+}
+
+you are forced to decorate an imagebutton from an asset
+
+    private void setButtonImage(ImageButton ib, String path){
+        InputStream is = null;
+        try {
+            is = this.getResources().getAssets().open(path);
+        } catch (IOException e) {
+            Log.w("FRAG", e);
+        }
+        Bitmap image = BitmapFactory.decodeStream(is);
+        ib.setImageBitmap( image);
+    }
+
+
+you think "there should be an easy way to filter files from dir.list"
+ha, good luck with that. Typical Java.
+
+    String[] list = dir.list(newFilenameFilter(){
+    @Override
+      public boolean accept(File dir,String name){
+      return name.matches(“s[0-7].*");}
+    });

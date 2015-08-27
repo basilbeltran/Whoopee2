@@ -12,10 +12,8 @@ import java.io.File;
  * Created by kandinski on 2015-08-18.
  */
 public class WhoopeeApp extends Application {
+    private static WhoopeeApp whoopee;
 
-    private boolean sdCard = false;
-    private boolean isNewUser = false;
-    private static WhoopeeApp                   whoopee;
 
     public static  WhoopeeApp getInstance(){   return whoopee;  }
 
@@ -26,24 +24,23 @@ public class WhoopeeApp extends Application {
         G.CTX = getApplicationContext();            //allow static access to context
         checkDeviceStorage();                       // Is device storage currently readable/writable ?
         checkNewInstall();                          // A new installation needs an application directory
-        if (isNewUser) {                            //Application initialization
+        if (G.isNewUser) {                            //Application initialization
             copyFilesToSD();
         }
         setPreferences();
-        Log.i("WhoopeeApp", " new user:" + isNewUser);
+        Log.i("WhoopeeApp", " NEW USER:" + G.isNewUser);
     }//onCreate
 
 
-    //TODO needs multi-device support work
     private boolean checkDeviceStorage() {
         try {
-            sdCard = U.checkExternalMedia();
-            if (G.DEBUG) Log.i(U.getTag(), "checkExternalMedia = " + sdCard);
+            G.sdCard = U.checkExternalMedia();
+            if (G.DEBUG) Log.i(U.getTag(), ">>>>>>>>>>>>>  read write ExternalMedia = " + G.sdCard);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return sdCard;
+        return G.sdCard;
     } //checkDevice
 
 
@@ -51,8 +48,11 @@ public class WhoopeeApp extends Application {
         try {
             File base = U.touchDirectory(G.APPDIR);
             if (G.DEBUG)
-                Log.i(U.getTag(), "Adding Application Directory " + G.APPDIR);
-            if (base != null) isNewUser = true;
+            if (base != null){
+                G.isNewUser = true;
+                Log.i(U.getTag(), ">>>>>>>>>>>>>  Added Application Directory " + G.APPDIR);
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -87,8 +87,7 @@ public class WhoopeeApp extends Application {
 
 
             //load example & test SMS macros  ("smsMacros")
-            G.MACROS =
-                    G.CTX.getSharedPreferences("smsMacros", Activity.MODE_PRIVATE);
+            G.MACROS = G.CTX.getSharedPreferences("smsMacros", Activity.MODE_PRIVATE);
             SharedPreferences.Editor spe = G.MACROS.edit();
             spe.putString("01-sounds", "&031505&032505&033505&034505&035505&036505&037505&038505#");
             spe.putString("02-volume", "&037105&037205&037305&037405&037505&037605&037705&037805&037905#");
@@ -108,7 +107,7 @@ public class WhoopeeApp extends Application {
             G.pitchMap.add(new Float(1.3));
             G.pitchMap.add(new Float(1.5));
             G.pitchMap.add(new Float(1.8));
-            G.pitchMap.add(new Float(2));  //posito
+            G.pitchMap.add(new Float(2));     //position 9
             G.volumeMap.add(new Float(.012)); //position 0
             G.volumeMap.add(new Float(.025));
             G.volumeMap.add(new Float(.05));

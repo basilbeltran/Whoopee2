@@ -20,18 +20,21 @@ import java.util.Random;
  * Created by kandinski on 2015-08-18.
  */
 public class G {     //  G...G is for G
+    public static boolean sdCard;
     public static final String  LF = System.getProperty("line.separator");       //expecting  "\n"
     public static final String  FS = System.getProperty("file.separator");       //expecting  "/"
     public static final String  PS = System.getProperty("path.separator");       //expecting  ":"
     public static boolean       DEBUG = true;       //  use thread interruptions for Thread:Class:Method tagging
-    public static boolean       A_DEBUG = false;    //   "      Details of the audio subsystem
-    public static boolean       V_DEBUG = false;    //   "      Details of the image subsystem
+    public static boolean       A_DEBUG = true;    //   "      Details of the audio subsystem
+    public static boolean       V_DEBUG = true;    //   "      Details of the image subsystem
     public static boolean       G_DEBUG = true;     //   "      Details of the gesture / touch subsystem
     public static Context       CTX;
     public static String        TAG = "WHOOPEE";                            //default Tag
-    public static String        APPNAME = TAG;                            //default Tag
-    public static String        ExternalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static String        APPNAME = TAG;                              //default Tag
+    //public static String        ExternalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static String        ExternalStorage = "/mnt/sdcard";
     public static final String  APPDIR = ExternalStorage +FS+TAG+FS;            // "/mnt/sdcard/WHOOPEE/"
+    public static boolean isNewUser = false;
     public static final String  DEFAULT_NAME = "default";
     public static final String  DEFAULT_PATH = APPDIR + DEFAULT_NAME + FS;      // "/mnt/sdcard/WHOOPEE/default/"
     public static final ArrayList<Float> pitchMap = new ArrayList<Float> ();

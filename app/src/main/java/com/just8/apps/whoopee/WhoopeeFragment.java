@@ -1,71 +1,44 @@
 package com.just8.apps.whoopee;
 
 import android.app.Activity;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import java.io.File;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link WhoopeeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link WhoopeeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class WhoopeeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String EXTRA_WHOOPEE_ID = "com.just8.apps.whoopee.whoopee_id";
     private static final String ARG_whoopeeDir = "default";
     private static final String ARG_PARAM2 = "param2";
 
     GridView mGridView;
-    private int mGridSize = 4;
+    private int mGridSize = 4;                          //TODO detect portrait orientation and change to 2
     private WhoopeeManager mWhoopeeManager;
-    GridLayoutManager glm;
+    public Whoopee mWhoopee;
+    private String whoopeeName;
+    JsonFileManager jfm = new JsonFileManager(G.CTX, "whoopees.json");
+    private ArrayList<Whoopee> mWhoopees = new ArrayList<>();
 
-    // TODO: Rename and change types of parameters
-    private String whoopeeDir;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param dir Parameter 1. Location of selected directory under /ExternalStorage/WHOOPEE/
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WhoopeeFragment.
-     */
-
-
-    public static WhoopeeFragment newInstance(String dir, String param2) {
+    public static WhoopeeFragment newInstance(String dir) {
         WhoopeeFragment fragment = new WhoopeeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_whoopeeDir, dir);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,12 +46,36 @@ public class WhoopeeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            whoopeeDir = getArguments().getString(ARG_whoopeeDir);  //TODO assert
-            mParam2 = getArguments().getString(ARG_PARAM2);
 
-            mWhoopeeManager = new WhoopeeManager(whoopeeDir);
-            mWhoopeeManager.setFragment(this);
+        if (getArguments() != null) {
+            if(G.isNewUser) {
+                Log.i(U.getTag(), " NEW USER:" + G.isNewUser);
+
+                whoopeeName = getArguments().getString(ARG_whoopeeDir);  //TODO asserts
+                mWhoopee = new Whoopee(whoopeeName);
+                mWhoopee.activateSound();
+                mWhoopees.add(mWhoopee);
+
+                try {
+                    String outfile = jfm.saveObjects2JSON(mWhoopees);
+                    if(G.G_DEBUG) Log.v( U.getTag(),"\n\nOUTFILE:"+ outfile);
+                } catch (JSONException e) {e.printStackTrace();
+                } catch (IOException e) {e.printStackTrace();}
+
+
+            }
+            else{
+
+                try {   mWhoopees = jfm.loadObjectsFromJSON();
+                } catch (IOException e) {e.printStackTrace();
+                } catch (JSONException e) {e.printStackTrace();}
+                if(G.G_DEBUG) Log.v( U.getTag(),"\n\nWHOOPEESSSSSSS SIZE:"+mWhoopees.size() );
+
+                mWhoopee = mWhoopees.get(0);
+                mWhoopee.activateSound();
+            }
+
+            mWhoopeeManager = new WhoopeeManager(this);
 
         }
     }
@@ -87,7 +84,7 @@ public class WhoopeeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_whoopee, container, false);
         mGridView = (GridView) view.findViewById(R.id.grid);
-        mGridView.setAdapter(new WhoopeeAdapter(mWhoopeeManager.getWhoopList()));
+        mGridView.setAdapter( new WhoopeeAdapter(mWhoopee) );
         mGridView.setOnTouchListener(mWhoopeeManager);
         return view;
     }
@@ -96,106 +93,118 @@ public class WhoopeeFragment extends Fragment {
         return mGridView;
     }
 
-    private class WhoopeeAdapter  extends BaseAdapter {
-        private List<Whoop> mWhoops;
+    private class WhoopeeAdapter extends BaseAdapter {
+        private Whoopee mWhoopee;
 
-        public WhoopeeAdapter(List<Whoop> whoops) {
-            mWhoops = whoops;
+        public WhoopeeAdapter(Whoopee whoop) {
+            mWhoopee = whoop;
         }
 
-        public int    getCount() { return(8);  }
-        public Object getItem(int position) { return null; }
-        public long   getItemId(int position) { return 0; }
+        public int getCount() {
+            if(G.G_DEBUG) Log.v( U.getTag(),"");
+            return (8);
+        }
 
-        /**
-         * Get a View that displays the data at the specified position in the data set. You can either
-         * create a View manually or inflate it from an XML layout file. When the View is inflated, the
-         * parent View (GridView, ListView...) will apply default layout parameters unless you use
-         * {@link LayoutInflater#inflate(int, ViewGroup, boolean)}
-         * to specify a root view and to prevent attachment to the root.
-         *
-         * @param position    The position of the item within the adapter's data set of the item whose view
-         *                    we want.
-         * @param convertView The old view to reuse, if possible. Note: You should check that this view
-         *                    is non-null and of an appropriate type before using. If it is not possible to convert
-         *                    this view to display the correct data, this method can create a new view.
-         *                    Heterogeneous lists can specify their number of view types, so that this View is
-         *                    always of the right type (see {@link #getViewTypeCount()} and
-         *                    {@link #getItemViewType(int)}).
-         * @param parent      The parent that this view will eventually be attached to
-         * @return A View corresponding to the data at the specified position.
-         */
+        public Object getItem(int position) {
+            if(G.G_DEBUG) Log.v( U.getTag(),"");
+            return null;
+        }
+
+        public long getItemId(int position) {
+            if(G.G_DEBUG) Log.v( U.getTag(), String.valueOf(position));
+            return 0;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            if(G.G_DEBUG) Log.v( U.getTag(),"FOR POSITION "+ position);
+
+            Uri uri = null;
+            uri = mWhoopee.getSight(position);
             ImageView i;
+
             if (convertView == null) {
                 i = new ImageView(G.CTX);
-                i.setLayoutParams(new GridView.LayoutParams( U.getScreenWidth() / 4,  U.getScreenHeight() / 2)  );
+                i.setLayoutParams(new GridView.LayoutParams(U.getScreenWidth() / 4, U.getScreenHeight() / 2));
+                //TODO i.setLayoutParams(new GridView.LayoutParams( U.getScreenWidth() / 2,  U.getScreenHeight() / 4)  );
+                //TODO also need new portrait xml if it chooses to use that orientation
                 i.setScaleType(ImageView.ScaleType.FIT_XY);
                 i.setId(position);
                 //i.setOnTouchListener(mWhoopeeManager);
 
             } else {
                 i = (ImageView) convertView;
-                Log.d(G.TAG, "recycled #" + i.getId());
+                Log.d(U.getTag(), "recycled #" + i.getId());
             }
 
-            Bitmap bmp = BitmapFactory.decodeFile(mWhoops.get(position).getSightFileName());
-            i.setImageBitmap(bmp);
+            i.setImageURI(uri);
             return i;
+
+/*            if (uri.getScheme().contains("http")) {
+                new DownloadImageTask((ImageView) i).execute(uri.toString());
+                Log.d(U.getTag(),"DownloadImageTask"+ uri.toString());
+                return i;
+            } else {
+                i.setImageURI(uri);
+                return i;
+            }*/
+        }//private class WhoopeeAdapter
+    }
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            if(G.G_DEBUG) Log.v( U.getTag(), String.valueOf(bmImage.getId()));
+
+            this.bmImage = bmImage;
         }
-    }//private class WhoopeeAdapter
 
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            if(G.G_DEBUG) Log.v( G.TAG+"doInBackground",urldisplay);
 
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if(G.G_DEBUG) Log.v( G.TAG+"onPostExecute","");
+            bmImage.setImageBitmap(result);
+        }
+    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mWhoopeeManager.release(); }
+        mWhoopee.mSoundPool.release();
+
+        try {
+            String outfile = jfm.saveObjects2JSON(mWhoopees);
+            if(G.G_DEBUG) Log.v( U.getTag(),"\n\nOUTFILE:"+ outfile);
+        } catch (JSONException e) {e.printStackTrace();
+        } catch (IOException e) {e.printStackTrace();}
 
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
-
 
     public WhoopeeFragment() {}  // Required empty public constructor
 

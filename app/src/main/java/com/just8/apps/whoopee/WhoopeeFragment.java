@@ -16,7 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.just8.apps.whoopee.afilechooser.FileUtils;
+import com.just8.apps.afilechooser.utils.FileUtils;
 
 import java.io.File;
 import java.io.InputStream;

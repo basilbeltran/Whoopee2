@@ -8,9 +8,6 @@ import android.view.ActionMode;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.just8.apps.whoopee.afilechooser.FileChooserActivity;
-
 import java.io.File;
 
 /**
@@ -153,9 +150,8 @@ public class WhoopeeManager implements
         if(position == 1) {
             Log.d(U.getTag(), " ............intent afilechooser \n");
 
-            Intent i = new Intent(mFragment.getActivity(), com.just8.apps.whoopee.afilechooser.FileChooserActivity.class);
-            i.setClassName(G.CTX,
-                    "com.just8.apps.whoopee.afilechooser.FileChooserActivity");
+            Intent i = new Intent(mFragment.getActivity(), com.just8.apps.afilechooser.FileChooserActivity.class);
+
             mFragment.startActivityForResult(i, mFragment.REQUEST_CODE_CHOOSER);
         }
     }

@@ -5,6 +5,7 @@
 
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.INTERNET" />
+<uses-library    android:name="com.just8.apps.afilechooser" android:required="true" />
 
     <uses-sdk android:minSdkVersion="16"/>
     <application
@@ -37,7 +38,7 @@
         </activity>
 
         <activity
-        android:name="com.just8.apps.whoopee.afilechooser.FileChooserActivity">
+        android:name="com.just8.apps.afilechooser.FileChooserActivity">
         <intent-filter>
             <action android:name="android.intent.action.GET_CONTENT" />
             <category android:name="android.intent.category.DEFAULT" />

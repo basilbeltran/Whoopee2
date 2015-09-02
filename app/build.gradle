@@ -19,17 +19,16 @@ android {
     }
 }
 
-/*dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    //compile files('libs/app-release.aar')
-    //compile 'com.just8.apps:app-release:1.1.0@aar'
-    compile 'com.just8.apps.afilechooser:afilechooser-release:1.1@aar'
-}*/
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile project(':afilechooser-release')
+}
+
+repositories{
+    flatDir{
+        dirs 'libs'
+    }
 }

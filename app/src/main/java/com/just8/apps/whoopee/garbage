@@ -26,8 +26,8 @@ Error:Execution failed for task ':app:processDebugManifest'.
 
   	<uses-library android:name="com.just8.apps.afilechooser" android:required="true" />
 
-  	compile(name:'afilechooser-release', ext:'aar')
-    }
+    compile project(':afilechooser-release')
+
     repositories{
         flatDir{
             dirs 'libs'

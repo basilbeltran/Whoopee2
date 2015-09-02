@@ -1,6 +1,7 @@
 package com.just8.apps.whoopee;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,25 +16,28 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import org.json.JSONException;
+import com.just8.apps.whoopee.afilechooser.FileUtils;
 
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 public class WhoopeeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     public static final String EXTRA_WHOOPEE_ID = "com.just8.apps.whoopee.whoopee_id";
+    public static final int REQUEST_CODE_CHOOSER = 0;
+
     private static final String ARG_whoopeeDir = "default";
     private static final String ARG_PARAM2 = "param2";
-
     GridView mGridView;
     private int mGridSize = 4;                          //TODO detect portrait orientation and change to 2
     private WhoopeeManager mWhoopeeManager;
     public Whoopee mWhoopee;
     private String whoopeeName;
-    JsonFileManager jfm = new JsonFileManager(G.CTX, "whoopees.json");
-    private ArrayList<Whoopee> mWhoopees = new ArrayList<>();
+    private ArrayList<Whoopee> whoopees;
+
 
     public static WhoopeeFragment newInstance(String dir) {
         WhoopeeFragment fragment = new WhoopeeFragment();
@@ -48,51 +52,43 @@ public class WhoopeeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            if(G.isNewUser) {
-                Log.i(U.getTag(), " NEW USER:" + G.isNewUser);
-
+                whoopees = WhoopeeData.get().getWhoopees();
                 whoopeeName = getArguments().getString(ARG_whoopeeDir);  //TODO asserts
-                mWhoopee = new Whoopee(whoopeeName);
+
+                for (int i = 0; i < whoopees.size(); i++) {
+                    if (whoopees.get(i).getMWhoopeeName().equals(whoopeeName)) {               //TODO how does this work? What does mViewPager do with this int?
+                        mWhoopee = WhoopeeData.get().getWhoopee(i);
+                        break;
+                    }
+                }
                 mWhoopee.activateSound();
-                mWhoopees.add(mWhoopee);
-
-                try {
-                    String outfile = jfm.saveObjects2JSON(mWhoopees);
-                    if(G.G_DEBUG) Log.v( U.getTag(),"\n\nOUTFILE:"+ outfile);
-                } catch (JSONException e) {e.printStackTrace();
-                } catch (IOException e) {e.printStackTrace();}
-
-
-            }
-            else{
-
-                try {   mWhoopees = jfm.loadObjectsFromJSON();
-                } catch (IOException e) {e.printStackTrace();
-                } catch (JSONException e) {e.printStackTrace();}
-                if(G.G_DEBUG) Log.v( U.getTag(),"\n\nWHOOPEESSSSSSS SIZE:"+mWhoopees.size() );
-
-                mWhoopee = mWhoopees.get(0);
-                mWhoopee.activateSound();
-            }
-
-            mWhoopeeManager = new WhoopeeManager(this);
-
         }
+        mWhoopeeManager = new WhoopeeManager(this);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+//        View decorView = getActivity().getWindow().getDecorView();
+//        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//        decorView.setSystemUiVisibility(uiOptions);
+//        android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+//        actionBar.hide();
+//TODO fix a toorbar sized hole in the view when actionBar.hide. Rolled back AppCompatActivity
+
+
         View view = inflater.inflate(R.layout.fragment_whoopee, container, false);
         mGridView = (GridView) view.findViewById(R.id.grid);
-        mGridView.setAdapter( new WhoopeeAdapter(mWhoopee) );
+        mGridView.setAdapter(new WhoopeeAdapter(mWhoopee));
         mGridView.setOnTouchListener(mWhoopeeManager);
         return view;
     }
 
+
     public GridView getGridView(){
         return mGridView;
     }
-
     private class WhoopeeAdapter extends BaseAdapter {
         private Whoopee mWhoopee;
 
@@ -141,7 +137,8 @@ public class WhoopeeFragment extends Fragment {
             i.setImageURI(uri);
             return i;
 
-/*            if (uri.getScheme().contains("http")) {
+/* WEB URI IN WHOOPEE
+            if (uri.getScheme().contains("http")) {
                 new DownloadImageTask((ImageView) i).execute(uri.toString());
                 Log.d(U.getTag(),"DownloadImageTask"+ uri.toString());
                 return i;
@@ -149,8 +146,29 @@ public class WhoopeeFragment extends Fragment {
                 i.setImageURI(uri);
                 return i;
             }*/
+
         }//private class WhoopeeAdapter
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(G.DEBUG) Log.v( U.getTag(),"REQUEST_CODE_"+ requestCode);
+
+        if (resultCode != Activity.RESULT_OK) return;
+
+        switch (requestCode) {
+            case REQUEST_CODE_CHOOSER:
+                final Uri uri = data.getData();
+                String path = FileUtils.getPath(G.CTX, uri);
+                if(G.DEBUG) Log.v( U.getTag(),"CHOOSER CHOOSE"+ path);
+                if (path != null && FileUtils.isLocal(path)) {
+                    File file = new File(path);
+                }
+        }
+    }
+
+
+    //TODO move to utility
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -181,22 +199,27 @@ public class WhoopeeFragment extends Fragment {
         }
     }
 
+
+
+
+
     @Override
     public void onDetach() {
         super.onDetach();
+        if(G.G_DEBUG) Log.v( U.getTag()," ");
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(G.G_DEBUG) Log.v( U.getTag()," ");
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(G.G_DEBUG) Log.v( U.getTag()," ");
         mWhoopee.mSoundPool.release();
-
-        try {
-            String outfile = jfm.saveObjects2JSON(mWhoopees);
-            if(G.G_DEBUG) Log.v( U.getTag(),"\n\nOUTFILE:"+ outfile);
-        } catch (JSONException e) {e.printStackTrace();
-        } catch (IOException e) {e.printStackTrace();}
 
 
     }

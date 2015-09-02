@@ -46,6 +46,9 @@ public class U {  // U is for UTILITIES
         return result;
     }
 
+    ////////////////////////////  FILE  /  STREAMS  / READERS  ////////////////////////////////////////
+
+
     public static boolean checkExternalMedia() {
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable = false;
@@ -73,8 +76,6 @@ public class U {  // U is for UTILITIES
     public static void copyResToFile(Context ctx, Uri uri, File dst) throws IOException {
         InputStream in = ctx.getContentResolver().openInputStream(uri);
         OutputStream out = new FileOutputStream(dst);
-
-// Transfer bytes from in to out
         byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {
@@ -83,9 +84,6 @@ public class U {  // U is for UTILITIES
         in.close();
         out.close();
     }
-
-
-
 
     public static boolean CopyAssetDir(Context ctx, String assetDirName, String destPath) {
         if (G.DEBUG) Log.i(U.getTag(), assetDirName + " - into - " + destPath);
@@ -121,54 +119,10 @@ public class U {  // U is for UTILITIES
         return retVal;
     } //CopyAssetDir
 
-
-    ////////////////////////////  FILE  /  STREAMS  / READERS  ////////////////////////////////////////
-
-
     public static File[] getFiles(String dir) {
         File d = new File(dir);
         return (d.listFiles());
     }
-
-
-
-
-/*    class ExtensionAwareFilenameFilter implements FilenameFilter {
-
-        private final Set<String> extensions;
-
-        public ExtensionAwareFilenameFilter(String... extensions) {
-            this.extensions = extensions == null ?
-                    Collections.emptySet() :
-                    Arrays.stream(extensions)
-                            .map(e -> e.toLowerCase()).collect(Collectors.toSet());
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            return extensions.isEmpty() ||
-                    extensions.contains(getFileExtension(name));
-        }
-
-        private String getFileExtension(String filename) {
-            String ext = null;
-            int i = filename .lastIndexOf('.');
-            if(i != -1 && i < filename .length()) {
-                ext = filename.substring(i+1).toLowerCase();
-            }
-            return ext;
-        }
-    }
-
-
-    @Test
-    public void filefilter() {
-        Arrays.stream(new File("D:\\downloads").
-                list(new ExtensionAwareFilenameFilter("pdf", "txt")))
-                .forEach(e -> System.out.println(e));
-    }*/
-
-
 
 
     //Copies src file to dst file.
@@ -202,10 +156,28 @@ public class U {  // U is for UTILITIES
             e.printStackTrace();
         }
         return retVal;
-
     }
 
+    /* Does the file already exist */
+    public static boolean  doesFileExist(String filename) {
+        File f = new File(filename);
+        if (f.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    /* Does the file already exist */
+    public static boolean  deleteFile(String filename) {
+        File f = new File(filename);
+        if (f.exists()) {
+            f.delete();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /* If the directory does not exists: create-it */
     public static File touchDirectory(String dirname) {
@@ -218,8 +190,18 @@ public class U {  // U is for UTILITIES
         }
     }
 
+    public static void DeleteRecursive(File fileOrDirectory)
+    {
+        if (fileOrDirectory.isDirectory())
+        {
+            for (File child : fileOrDirectory.listFiles())
+            {
+                DeleteRecursive(child);
+            }
+        }
 
-
+        fileOrDirectory.delete();
+    }
 
 
 ////////////////////////////  ARRAY  ////////////////////////////////////////

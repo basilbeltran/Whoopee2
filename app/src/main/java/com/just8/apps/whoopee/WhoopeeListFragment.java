@@ -27,7 +27,7 @@ public class WhoopeeListFragment extends Fragment {
     private ArrayList<Whoopee> mObjectList;
 
     private RecyclerView mRecyclerView;
-    private RvAdapter mRvAdapter;
+    private WhoopeeListAdapter mWhoopeeListAdapter;
 
 
     @Override
@@ -36,8 +36,8 @@ public class WhoopeeListFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
         mSubtitleVisible = false;
-        getActivity().setTitle(R.string.);
-        mObjectList = WhoopeeManager.get(getActivity()).getWhoopees();
+        getActivity().setTitle(R.string.whoopee);
+        mObjectList = WhoopeeData.get().getWhoopees();
 
     }
 
@@ -57,14 +57,14 @@ public class WhoopeeListFragment extends Fragment {
     }
 
     private void updateUI() {
-        WhoopeeManager mWhoopeeManager = WhoopeeManager.get(getActivity());
-        List<Whoopee> Whoopees = mWhoopeeManager.getWhoopees();
+        WhoopeeData mWhoopeeData = WhoopeeData.get();
+        List<Whoopee> Whoopees = mWhoopeeData.getWhoopees();
 
 
-        if (mRvAdapter == null) {
-            mRvAdapter = new RvAdapter(Whoopees, this.getActivity());
-            mRecyclerView.setAdapter(mRvAdapter);
-        } else { mRvAdapter.notifyDataSetChanged(); }
+        if (mWhoopeeListAdapter == null) {
+            mWhoopeeListAdapter = new WhoopeeListAdapter(Whoopees, this.getActivity());
+            mRecyclerView.setAdapter(mWhoopeeListAdapter);
+        } else { mWhoopeeListAdapter.notifyDataSetChanged(); }
         Log.v(U.getTag(), "updateUI() called");
 
     }
@@ -90,9 +90,9 @@ public class WhoopeeListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_new_crime:
-                Whoopee crime = new Whoopee();
-                WhoopeeManager.get(getActivity()).addCrime(crime);
-                startCrimePager(crime.getId());
+                Whoopee whoopee = new Whoopee();
+                WhoopeeData.get().addWhoopee(whoopee);
+                startCrimePager(whoopee.getId());
                 return true;
             case R.id.menu_item_show_subtitle:
                 if (getActivity().getActionBar().getSubtitle() == null) {

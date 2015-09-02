@@ -1,11 +1,17 @@
 package com.just8.apps.whoopee;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.just8.apps.whoopee.afilechooser.FileChooserActivity;
+
+import java.io.File;
 
 /**
  * BB
@@ -21,9 +27,9 @@ public class WhoopeeManager implements
 
 
     public WhoopeeManager(WhoopeeFragment f) {
-
         mFragment = f;
         mGestureDetector = new GestureDetector(G.CTX, this, G.UIHandler);
+        mGestureDetector.setIsLongpressEnabled(true);
     }
 
     public int getCellPosition(MotionEvent me) {
@@ -51,6 +57,7 @@ public class WhoopeeManager implements
         int position = getCellPosition(ev);
         if(G.DEBUG) Log.v( U.getTag(), position+ " onDown");
 
+        float divisor= 26;
         int xTriggerVal= 0;
         int yTriggerVal= 0;
         int left = v.getLeft();       // the left edge of the view
@@ -63,10 +70,13 @@ public class WhoopeeManager implements
 
         int xOffset =  x - left ;
         int yOffset =  bottom - y;
-        int xInterval = width / 9;  // the view is divided into equal intervals and  values mapped for each region
+        int xInterval = width / 50;  // the view is divided into equal intervals and  values mapped for each region
         int yInterval = height / 9; // because soundpool does not respond to volume and pitch values in a linear way
         xTriggerVal = xOffset / xInterval ;
         yTriggerVal = yOffset / yInterval ;
+        float pitch = xTriggerVal/divisor;
+
+        //if (pitch > 2) pitch = 2;
 
         if(G.G_DEBUG) Log.v( U.getTag(), "touch for sound trigger" +
                         "\nScreenWidth:"+ U.getScreenWidth()+
@@ -81,17 +91,20 @@ public class WhoopeeManager implements
                         "\nyOffset:"+yOffset+
                         "\nxInterval:"+ xInterval+
                         "\nyInterval:"+yInterval+
+                        "\nxTriggerVal:"+xTriggerVal+
                         "\nyTriggerVal:"+yTriggerVal+
-                        "\nxTriggerVal:"+xTriggerVal
+                        "\ndivisor:"+divisor+
+                        "\npitch:"+pitch
+
                 //"\n\nEVENT:"+U.toString(event);
         );
 
         float vol = G.volumeMap.get(yTriggerVal);
-        float pitch = G.pitchMap.get(xTriggerVal);
-
+        //float pitch = G.pitchMap.get(xTriggerVal);
 
         try {
-            mFragment.mWhoopee.mSoundPool.play(position+1,
+            mFragment.mWhoopee.mSoundPool.play(
+                    position+1,
                     vol,
                     vol,
                     1,
@@ -131,6 +144,20 @@ public class WhoopeeManager implements
     public void onLongPress(MotionEvent ev) {
         int position = getCellPosition(ev);
         if(G.DEBUG) Log.v( U.getTag(), position+ " onLongPress");
+
+        if(position == 0) {
+            if (G.G_DEBUG) Log.v(U.getTag(), "GOT LONG PRESS..."+position );
+            Log.d(U.getTag(), " ............UNINSTALLING"+ G.APPDIR);
+            U.DeleteRecursive(new File(G.APPDIR));
+        }
+        if(position == 1) {
+            Log.d(U.getTag(), " ............intent afilechooser \n");
+
+            Intent i = new Intent(mFragment.getActivity(), com.just8.apps.whoopee.afilechooser.FileChooserActivity.class);
+            i.setClassName(G.CTX,
+                    "com.just8.apps.whoopee.afilechooser.FileChooserActivity");
+            mFragment.startActivityForResult(i, mFragment.REQUEST_CODE_CHOOSER);
+        }
     }
 
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){

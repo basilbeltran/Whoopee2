@@ -1,29 +1,35 @@
-Public String getSimpleFileName(String longName){
+MEMORY
+Watch memory execute adb shell " while true ; do  dumpsys meminfo 22188 ; done ; " > dumpsysOfsmthn.txt
+http://stackoverflow.com/questions/21186259/android-app-memory-issue
+http://www.youtube.com/watch?v=_CruQY55HOk
+http://developer.android.com/tools/performance/allocation-tracker/index.html
+https://developer.android.com/tools/debugging/debugging-memory.html
 
-String[] sightComponents = longName.split("/");
-String nameWithExt = sightComponents[sightComponents.length - 1];
-mSightName = nameWithExt.replace(".jpg", "”); // fix this
-}
+ICONS
+System icons can be found in your Android SDK directory.
+On a Mac, this is typically /Users/user/Library/Android/sdk.
+Right-click on your drawable directory in the Project Tool window and select New → Image Asset
 
-you are forced to decorate an imagebutton from an asset
 
-    private void setButtonImage(ImageButton ib, String path){
-        InputStream is = null;
-        try {
-            is = this.getResources().getAssets().open(path);
-        } catch (IOException e) {
-            Log.w("FRAG", e);
-        }
-        Bitmap image = BitmapFactory.decodeStream(is);
-        ib.setImageBitmap( image);
+parts of your app's UI covered by system bars.
+add the android:fitsSystemWindows attribute to your XML layout file, set to true.
+This adjusts the padding of the parent ViewGroup to leave space for the system windows.
+
+
+http://b2cloud.com.au/tutorial/using-local-android-library-packages-aar/
+
+Error:Execution failed for task ':app:processDebugManifest'.
+> Manifest merger failed : Attribute application@theme value=(@style/AppTheme) from AndroidManifest.xml:16:9
+  	is also present at :afilechooser-release::14:9 value=(@style/fileChooserName)
+  	Suggestion: add 'tools:replace="android:theme"' to <application> element at AndroidManifest.xml:9:5 to override
+
+
+  	<uses-library android:name="com.just8.apps.afilechooser" android:required="true" />
+
+  	compile(name:'afilechooser-release', ext:'aar')
     }
-
-
-you think "there should be an easy way to filter files from dir.list"
-ha, good luck with that. Typical Java.
-
-    String[] list = dir.list(newFilenameFilter(){
-    @Override
-      public boolean accept(File dir,String name){
-      return name.matches(“s[0-7].*");}
-    });
+    repositories{
+        flatDir{
+            dirs 'libs'
+        }
+    }

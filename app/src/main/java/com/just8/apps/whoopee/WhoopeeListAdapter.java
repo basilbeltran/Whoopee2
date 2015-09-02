@@ -17,19 +17,19 @@ import java.util.List;
  *
  * Created by kandinski on 2015-08-11.
  */
-public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RvViewHolder> {
+public class WhoopeeListAdapter extends RecyclerView.Adapter<WhoopeeListAdapter.RvViewHolder> {
     private LayoutInflater inflator;
     private List<Whoopee> mObjectList;
     private Context mContext;
 
-    public RvAdapter(List<Whoopee> objectList, Context context) {
+    public WhoopeeListAdapter(List<Whoopee> objectList, Context context) {
         mObjectList = objectList;
         inflator = LayoutInflater.from(context);
         mContext = context;
     }
 
     @Override
-    public RvAdapter.RvViewHolder onCreateViewHolder(ViewGroup recyclerView, int i) {
+    public WhoopeeListAdapter.RvViewHolder onCreateViewHolder(ViewGroup recyclerView, int i) {
         View itemView = inflator.inflate(R.layout.fragmant_whoopee_recycler, recyclerView, false);
         RvViewHolder mRvViewHolder = new RvViewHolder(itemView);
         Log.v(U.getTag(), "onCreateViewHolder() called");
@@ -76,7 +76,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RvViewHolder> {
 
             //getAdapterPosition();
             Log.d(U.getTag(), "CRIME SELECTED = " + mWhoopee.getMWhoopeeName());
-            Intent i = new Intent(mContext, WoopeePagerActivity.class);
+            Intent i = new Intent(mContext, WhoopeePagerActivity.class);
             i.putExtra(WhoopeeFragment.EXTRA_WHOOPEE_ID, mWhoopee.getId());
             mContext.startActivity(i);
         }

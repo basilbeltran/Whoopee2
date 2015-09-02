@@ -29,6 +29,10 @@ public class Whoopee {
     public SoundPool mSoundPool;
     //TODO abstract sound handling functions
 
+
+    public  Whoopee() {
+    }
+
     public   Whoopee(String name) {
         mMWhoopeeName = name;
         setFileBase();
@@ -71,12 +75,23 @@ public class Whoopee {
     }
 
     public JSONObject toJSON() throws JSONException {
+        JSONArray sights = new JSONArray();
+        JSONArray sounds = new JSONArray();
+
+        for(Uri uri : mSightList){
+            sights.put(uri);
+        }
+
+        for(Uri uri : mSoundList){
+            sounds.put(uri);
+        }
+
         JSONObject json = new JSONObject();
         json.put(JSON_ID, mId.toString());
         json.put(JSON_TITLE, mMWhoopeeName);
-        json.put(JSON_SIGHTS, new JSONArray(mSightList));
-        json.put(JSON_SOUNDS, new JSONArray(mSoundList));
-        mJsonObject = json;
+        json.put(JSON_SIGHTS, sights);
+        json.put(JSON_SOUNDS, sounds);
+
         return json;
     }
 

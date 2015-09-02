@@ -23,4 +23,11 @@
     <string name="subtitle">If you see something, say something.</string>
     <string name="delete_crime">Delete</string>
 
+    <string name="empty_directory">Empty Directory</string>
+    <string name="storage_removed">Storage was removed or unmounted.</string>
+    <string name="error_selecting_file">Error selecting File</string>
+
+
+
+
 </resources>

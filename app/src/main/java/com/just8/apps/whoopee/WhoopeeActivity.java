@@ -3,7 +3,7 @@ package com.just8.apps.whoopee;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 
-public class MainActivity extends SingleFragmentActivity {
+public class WhoopeeActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {

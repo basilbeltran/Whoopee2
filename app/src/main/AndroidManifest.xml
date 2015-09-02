@@ -1,31 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.just8.apps.whoopee">
+          package="com.just8.apps.whoopee"
+          xmlns:tools="http://schemas.android.com/tools">
+
+
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk android:minSdkVersion="16"/>
     <application
+
         android:debuggable="true"
+        android:label="@string/app_name"
         android:name=".WhoopeeApp"
         android:allowBackup="true"
         android:icon="@drawable/whoopie"
-        android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:screenOrientation="landscape"
-        tools:ignore="HardcodedDebugMode">>
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:theme"
+        >
 
         <activity
-            android:name=".MainActivity"
+            android:name=".WhoopeeActivity"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
-            >
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".WhoopeePagerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+        android:name="com.just8.apps.whoopee.afilechooser.FileChooserActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.GET_CONTENT" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.OPENABLE" />
+            <data android:mimeType="*/*" />
+        </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

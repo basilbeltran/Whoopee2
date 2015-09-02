@@ -24,18 +24,17 @@ public class WhoopeeApp extends Application {
         G.CTX = getApplicationContext();            //allow static access to context
         checkDeviceStorage();                       // Is device storage currently readable/writable ?
         checkNewInstall();                          // A new installation needs an application directory
-        if (G.isNewUser) {                            //Application initialization
+        if (G.newInstall) {                            //Application initialization
             copyFilesToSD();
         }
         setPreferences();
-        Log.i("WhoopeeApp", " NEW USER:" + G.isNewUser);
     }//onCreate
 
 
     private boolean checkDeviceStorage() {
         try {
             G.sdCard = U.checkExternalMedia();
-            if (G.DEBUG) Log.i(U.getTag(), ">>>>>>>>>>>>>  read write ExternalMedia = " + G.sdCard);
+            if (G.DEBUG) Log.i(U.getTag(), ">>>>>>>>>>>>>  read/write ExternalMedia = " + G.sdCard);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -47,11 +46,11 @@ public class WhoopeeApp extends Application {
     private boolean checkNewInstall() {
         try {
             File base = U.touchDirectory(G.APPDIR);
-            if (G.DEBUG)
             if (base != null){
-                G.isNewUser = true;
-                Log.i(U.getTag(), ">>>>>>>>>>>>>  Added Application Directory " + G.APPDIR);
-
+                G.newInstall = true;
+                Log.i(U.getTag(), ">>>>>>>>>>>>>  CREATED Application Directory " + G.APPDIR);
+            }else {
+                Log.i(U.getTag(), ">>>>>>>>>>>>>  Application Directory FOUND" + G.APPDIR);
             }
         } catch (Exception e) {
             e.printStackTrace();

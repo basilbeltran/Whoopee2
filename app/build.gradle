@@ -25,6 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile project(':afilechooser-release')
+    compile project(':ringdroid-release')
 }
 
 repositories{

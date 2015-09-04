@@ -62,8 +62,10 @@ public class WhoopeeApp extends Application {
 
     private boolean copyFilesToSD() { // moves from assets in apk to system or sdcard if available
         try {
-            File factory = U.touchDirectory(G.APPDIR + G.DEFAULT_NAME);
+            U.touchDirectory(G.APPDIR + G.DEFAULT_NAME);
+            U.touchDirectory(G.APPDIR + G.TRAINING_NAME);
             U.CopyAssetDir(this, G.DEFAULT_NAME, G.DEFAULT_PATH);
+            U.CopyAssetDir(this, G.TRAINING_NAME, G.TRAINING_PATH);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

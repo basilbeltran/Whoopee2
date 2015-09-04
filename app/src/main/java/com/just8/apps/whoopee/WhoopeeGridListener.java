@@ -1,32 +1,30 @@
 package com.just8.apps.whoopee;
 
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import java.io.File;
 
 /**
  * BB
  * Created by kandinski on 2015-08-16.
  */
-public class WhoopeeManager implements
+public class WhoopeeGridListener implements
         GestureDetector.OnGestureListener,
         View.OnTouchListener {
 
-    private GestureDetector mGestureDetector;
+    private GestureDetector mGridGestureDetector;
     private View v;
-    private WhoopeeFragment mFragment;
+    private WhoopeePageFragment mFragment;
+    private boolean wEditMode=false;
 
 
-    public WhoopeeManager(WhoopeeFragment f) {
+
+    public WhoopeeGridListener(WhoopeePageFragment f) {
         mFragment = f;
-        mGestureDetector = new GestureDetector(G.CTX, this, G.UIHandler);
-        mGestureDetector.setIsLongpressEnabled(true);
+        mGridGestureDetector = new GestureDetector(G.CTX, this, G.UIHandler);
+        mGridGestureDetector.setIsLongpressEnabled(true);
     }
 
     public int getCellPosition(MotionEvent me) {
@@ -43,17 +41,98 @@ public class WhoopeeManager implements
     }
 
     public boolean onTouch(View view, MotionEvent event) {
+
+
+        int action = event.getAction();
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                Log.d(U.getTag(),"Action was DOWN");
+            case (MotionEvent.ACTION_MOVE) :
+                Log.d(U.getTag(),"Action was MOVE");
+
+            case (MotionEvent.ACTION_UP) :
+                Log.d(U.getTag(),"Action was UP");
+
+            case (MotionEvent.ACTION_CANCEL) :
+                Log.d(U.getTag(),"Action was CANCEL");
+            case (MotionEvent.ACTION_OUTSIDE) :
+                Log.d(U.getTag(),"Movement occurred outside bounds " +
+                        "of current screen element");
+            default :
+        }
+
         if(G.G_DEBUG) Log.v( U.getTag(),"\n\nEVENT:"+U.dumpEvent(event));
-        mGestureDetector.onTouchEvent(event);
+        mGridGestureDetector.onTouchEvent(event);
         return false;
     }
 
+    public void onLongPress(MotionEvent ev) {
+        int position = getCellPosition(ev);
+        if(G.DEBUG) Log.v( U.getTag(), " onLongPress  EDIT" + position );
+        mFragment.edit(position);
+    }
+
+
+    public boolean onUp(MotionEvent ev) {
+        if(G.G_DEBUG) Log.v( U.getTag(),"");
+
+        return false;
+    }
 
     public boolean onDown(MotionEvent ev) {
 
         int position = getCellPosition(ev);
         if(G.DEBUG) Log.v( U.getTag(), position+ " onDown");
+        play(position, ev );
 
+        return true;
+    }
+
+    public boolean onSingleTapUp(MotionEvent ev) {
+        int position = getCellPosition(ev);
+        if(G.DEBUG) Log.v(U.getTag(), position + " onSingleTapUp");
+        return true;
+    }
+
+    public boolean onSingleTapConfirmed(MotionEvent ev) {
+        int position = getCellPosition(ev);
+        if(G.DEBUG) Log.v( U.getTag(), position+ " onSingleTapConfirmed");
+        return true;
+    }
+
+
+    public boolean onDoubleTapEvent(MotionEvent ev) {
+        int position = getCellPosition(ev);
+        if(G.DEBUG) Log.v( U.getTag(), position+ " onDoubleTapEvent");
+        return true;
+    }
+
+    public void onShowPress(MotionEvent ev) {
+        int position = getCellPosition(ev);
+        if(G.DEBUG) Log.v( U.getTag(), position+ " onShowPress");
+    }
+
+
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+        int position1 = getCellPosition(e1);
+        int position2 = getCellPosition(e2);
+        if(G.DEBUG) Log.v( U.getTag(), "onScroll  "+position1+":"+position2+":"+distanceX+":"+distanceY);
+        return true;
+    }
+
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
+        int position1 = getCellPosition(e1);
+        int position2 = getCellPosition(e2);
+        if(G.G_DEBUG) Log.v( U.getTag(), "onFling  "+position1+":"+position2+":"+velocityX+":"+velocityY);
+        if(G.G_DEBUG) Log.v(U.getTag(), U.dumpEvent(e1));
+        if(G.G_DEBUG) Log.v(U.getTag(), U.dumpEvent(e2));
+        return true;
+    }
+
+    public void play(int position, MotionEvent ev){
+
+        float pressure = ev.getPressure();
         float divisor= 26;
         int xTriggerVal= 0;
         int yTriggerVal= 0;
@@ -76,6 +155,7 @@ public class WhoopeeManager implements
         //if (pitch > 2) pitch = 2;
 
         if(G.G_DEBUG) Log.v( U.getTag(), "touch for sound trigger" +
+                        "\nPressure:"+ pressure+
                         "\nScreenWidth:"+ U.getScreenWidth()+
                         "\nScreenHeight:"+ U.getScreenHeight()+
                         "\nleft:"+ left+
@@ -110,68 +190,6 @@ public class WhoopeeManager implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return true;
     }
-
-    public boolean onSingleTapUp(MotionEvent ev) {
-        int position = getCellPosition(ev);
-        if(G.DEBUG) Log.v(U.getTag(), position + " onSingleTapUp");
-        return true;
-    }
-
-    public boolean onSingleTapConfirmed(MotionEvent ev) {
-        int position = getCellPosition(ev);
-        if(G.DEBUG) Log.v( U.getTag(), position+ " onSingleTapConfirmed");
-        return true;
-    }
-
-
-    public boolean onDoubleTapEvent(MotionEvent ev) {
-        int position = getCellPosition(ev);
-        if(G.DEBUG) Log.v( U.getTag(), position+ " onDoubleTapEvent");
-        return true;
-    }
-
-    public void onShowPress(MotionEvent ev) {
-        int position = getCellPosition(ev);
-        if(G.DEBUG) Log.v( U.getTag(), position+ " onShowPress");
-    }
-
-    public void onLongPress(MotionEvent ev) {
-        int position = getCellPosition(ev);
-        if(G.DEBUG) Log.v( U.getTag(), position+ " onLongPress");
-
-        if(position == 0) {
-            if (G.G_DEBUG) Log.v(U.getTag(), "GOT LONG PRESS..."+position );
-            Log.d(U.getTag(), " ............UNINSTALLING"+ G.APPDIR);
-            U.DeleteRecursive(new File(G.APPDIR));
-        }
-        if(position == 1) {
-            Log.d(U.getTag(), " ............intent afilechooser \n");
-
-            Intent i = new Intent(mFragment.getActivity(), com.just8.apps.afilechooser.FileChooserActivity.class);
-
-            mFragment.startActivityForResult(i, mFragment.REQUEST_CODE_CHOOSER);
-        }
-    }
-
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
-        int position1 = getCellPosition(e1);
-        int position2 = getCellPosition(e2);
-        if(G.DEBUG) Log.v( U.getTag(), "onScroll  "+position1+":"+position2+":"+distanceX+":"+distanceY);
-        return true;
-    }
-
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
-        int position1 = getCellPosition(e1);
-        int position2 = getCellPosition(e2);
-        if(G.G_DEBUG) Log.v( U.getTag(), "onFling  "+position1+":"+position2+":"+velocityX+":"+velocityY);
-        if(G.G_DEBUG) Log.v(U.getTag(), U.dumpEvent(e1));
-        if(G.G_DEBUG) Log.v(U.getTag(), U.dumpEvent(e2));
-        return true;
-    }
-
-
 
 }

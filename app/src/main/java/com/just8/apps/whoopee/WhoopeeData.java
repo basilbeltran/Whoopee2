@@ -20,10 +20,8 @@ public class WhoopeeData {
 
     private static WhoopeeData mData;
     private List<Whoopee> mWhoopees;
-
     private JsonFileManager mObjects2JSON;
     private static final String FILENAME = G.configJson;
-
 
     private WhoopeeData() {
         mObjects2JSON = new JsonFileManager(FILENAME);
@@ -58,9 +56,9 @@ public class WhoopeeData {
     }
 
     public ArrayList<Whoopee> getWhoopees(){
+
         return (ArrayList) mWhoopees;
     }
-
 
     public Whoopee getWhoopee(UUID id) {
         for (Whoopee w : mWhoopees) {
@@ -80,15 +78,28 @@ public class WhoopeeData {
         return null;
     }
 
+    public Whoopee getWhoopeeTemplate() {
+        Whoopee tWhoopee = null;
+        for (int i = 0; i < mWhoopees.size(); i++) {
+            if (mWhoopees.get(i).getMWhoopeeName().equals("template")) {
+                tWhoopee = WhoopeeData.get().getWhoopee(i);
+                Log.d(U.getTag(), "FOUND TEMPLATE.... " + tWhoopee.getMWhoopeeName());
+                break;
+            }
+        }
+        Whoopee nWhoopee = new Whoopee(tWhoopee.getSoundList(), tWhoopee.getSightList());
+        addWhoopee(nWhoopee);
+        Log.d(U.getTag(), "returning.... " + nWhoopee.getMWhoopeeName());
+        return nWhoopee;
+    }
 
     public void addWhoopee(Whoopee c) {
-
         mWhoopees.add(c);
         Log.d(U.getTag(), "added to mWhoopees \n" + c.getMWhoopeeName());
-
     }
 
     public void deleteWhoopee(Whoopee c) {
+
         mWhoopees.remove(c);
     }
 
@@ -97,6 +108,7 @@ public class WhoopeeData {
             Log.d(U.getTag(), "writing mWhoopees to file. ArraySize:"+mWhoopees.size());
             String outfile = mObjects2JSON.saveObjects2JSON((ArrayList) mWhoopees);
             Log.d(U.getTag(), "mWhoopees saved to file \n" +outfile);
+            reset();
             return true;
         } catch (Exception e) {
             Log.e(U.getTag(), "Error saving mWhoopees: ", e);

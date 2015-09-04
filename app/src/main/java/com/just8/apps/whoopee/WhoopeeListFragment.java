@@ -118,7 +118,7 @@ public class WhoopeeListFragment extends Fragment {
 
     public void startCrimePager(UUID id){
         Intent i = new Intent(getActivity(), WhoopeePagerActivity.class);
-        i.putExtra(WhoopeeFragment.EXTRA_WHOOPEE_ID, id);
+        i.putExtra(WhoopeePageFragment.EXTRA_WHOOPEE_ID, id);
         startActivity(i);
     }
 

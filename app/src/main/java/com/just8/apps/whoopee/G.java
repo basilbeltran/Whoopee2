@@ -38,7 +38,12 @@ public class G {     //  G...G is for G
     public static final String  APPDIR = ExternalStorage +FS+TAG+FS;            // "/mnt/sdcard/WHOOPEE/"
     public static boolean newInstall = false;
     public static final String  DEFAULT_NAME = "default";
-    public static final String  DEFAULT_PATH = APPDIR + DEFAULT_NAME + FS;      // "/mnt/sdcard/WHOOPEE/default/"
+    public static final String  TRAINING_NAME = "training";
+    public static final String  EDIT_NAME = "tempWhoopee";
+
+    public static final String  DEFAULT_PATH = APPDIR + DEFAULT_NAME + FS;        // "/mnt/sdcard/WHOOPEE/default/"
+    public static final String  TRAINING_PATH = APPDIR + TRAINING_NAME + FS;      // "/mnt/sdcard/WHOOPEE/training/"
+
     public static final ArrayList<Float> pitchMap = new ArrayList<Float> ();
     public static final ArrayList <Float> volumeMap = new ArrayList<Float>();
 

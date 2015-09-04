@@ -77,7 +77,7 @@ public class WhoopeeListAdapter extends RecyclerView.Adapter<WhoopeeListAdapter.
             //getAdapterPosition();
             Log.d(U.getTag(), "CRIME SELECTED = " + mWhoopee.getMWhoopeeName());
             Intent i = new Intent(mContext, WhoopeePagerActivity.class);
-            i.putExtra(WhoopeeFragment.EXTRA_WHOOPEE_ID, mWhoopee.getId());
+            i.putExtra(WhoopeePageFragment.EXTRA_WHOOPEE_ID, mWhoopee.getId());
             mContext.startActivity(i);
         }
     }//class

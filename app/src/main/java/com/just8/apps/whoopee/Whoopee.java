@@ -33,19 +33,11 @@ public class Whoopee {
     public  Whoopee() {
     }
 
-    public   Whoopee(String name) {
-        mMWhoopeeName = name;
-        setFileBase();
-        File whoopeeDir = new File(G.APPDIR +mMWhoopeeName);
+    public   Whoopee(ArrayList sound, ArrayList sight) {
+        mSoundList = sound;
+        mSightList = sight;
         mId = UUID.randomUUID();
-        String[] art= whoopeeDir.list();
-        for (String fName: art) {
-            if (fName.startsWith("s")) {
-                Uri sound = Uri.parse(FILE_BASE + fName);
-                mSoundList.add(sound) ;
-            }
-            else mSightList.add(  Uri.parse(FILE_BASE + fName)  );
-        }
+        mMWhoopeeName = "temp";
     }
 
 
@@ -69,6 +61,7 @@ public class Whoopee {
     }
 
     public SoundPool activateSound(){
+        if(mSoundPool != null) mSoundPool.release();
         mSoundPool = new SoundPool( MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         for(Uri sound: mSoundList)  mSoundPool.load(sound.getPath(), 1);
         return mSoundPool;
@@ -138,21 +131,13 @@ public class Whoopee {
     public void setSight(Uri sight, int pos) {
          mSightList.set(pos, sight);
     }
+
     public String getMWhoopeeName() {
         return mMWhoopeeName;
     }
 
     public void setMWhoopeeName(String MWhoopeeName) {
         mMWhoopeeName = MWhoopeeName;
-    }
-
-    private void setFileBase() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("file:/");
-        sb.append(G.APPDIR);
-        sb.append(mMWhoopeeName + G.FS);
-        FILE_BASE = sb.toString();
-        if (G.DEBUG) Log.d(U.getTag(), "FILE_BASE=" + FILE_BASE);
     }
 
 

@@ -5,8 +5,10 @@
 
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.INTERNET" />
-<uses-library    android:name="com.just8.apps.afilechooser" android:required="true" />
-<uses-library    android:name="com.ringdroid" android:required="true" />
+<uses-library    android:name="com.just8.apps.afilechooser"
+                 android:required="true" />
+<uses-library    android:name="com.ringdroid"
+                 android:required="true" />
 <uses-sdk android:minSdkVersion="16"/>
 
     <application

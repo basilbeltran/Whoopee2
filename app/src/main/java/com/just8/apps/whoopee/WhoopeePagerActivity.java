@@ -28,7 +28,7 @@ public class WhoopeePagerActivity extends FragmentActivity {          //holds a 
 
         if(mAllWhoopees.size() == 0){   // TODO DEVELOPMENT ERROR CONDITION  (re)move all this to WhoopeeData
             G.newInstall=true;
-            WhoopeeData.reset();
+            WhoopeeData.reread();
             if (G.G_DEBUG) Log.v(U.getTag(), "CONFIG RESET newInstall is........ " + String.valueOf(G.newInstall));
             WhoopeeData.get().saveWhoopees();
             mAllWhoopees = WhoopeeData.get().getWhoopees();

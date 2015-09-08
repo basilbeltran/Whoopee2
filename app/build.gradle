@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "com.just8.apps.whoopee"
         minSdkVersion 16
@@ -17,15 +16,36 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        kids {
+            applicationId = "com.just8.apps.whoopee.kids"
+            versionName = "1.0-kids"
+        }
+
+        pranks {
+            applicationId = "com.just8.apps.whoopee.pranks"
+            versionName = "1.0-pranks"
+        }
+
+        fans {
+            applicationId = "com.just8.apps.whoopee.fans"
+            versionName = "1.0-fans"
+        }
+    }
 }
 
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile project(':afilechooser-release')
     compile project(':ringdroid-release')
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile files('libs/AndroidEasingFunctions-1.0.0.jar')
+    compile files('libs/AndroidViewAnimations-1.1.3.jar')
 }
 
 repositories{

@@ -1,10 +1,12 @@
 package com.just8.apps.whoopee;
 
-import android.content.Intent;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 /**
  * BB
@@ -15,7 +17,7 @@ public class WhoopeeGridListener implements
         View.OnTouchListener {
 
     private GestureDetector mGridGestureDetector;
-    private View v;
+    private View mView;
     private WhoopeePageFragment mFragment;
     private boolean wEditMode=false;
 
@@ -35,7 +37,7 @@ public class WhoopeeGridListener implements
             return -1 ;
         }
         else {
-            v = mFragment.getGridView().getChildAt(position);
+            mView = mFragment.getGridView().getChildAt(position);
             return position;
         }
     }
@@ -44,6 +46,8 @@ public class WhoopeeGridListener implements
 
 
         int action = event.getAction();
+        int position = getCellPosition(event);
+
 
         switch(action) {
             case (MotionEvent.ACTION_DOWN) :
@@ -52,7 +56,7 @@ public class WhoopeeGridListener implements
                 Log.d(U.getTag(),"Action was MOVE");
 
             case (MotionEvent.ACTION_UP) :
-                Log.d(U.getTag(),"Action was UP");
+                Log.d(U.getTag(), "Action was UP");
 
             case (MotionEvent.ACTION_CANCEL) :
                 Log.d(U.getTag(),"Action was CANCEL");
@@ -75,17 +79,15 @@ public class WhoopeeGridListener implements
 
 
     public boolean onUp(MotionEvent ev) {
-        if(G.G_DEBUG) Log.v( U.getTag(),"");
+        if(G.G_DEBUG) Log.v( U.getTag(),"UUUUUUUUUPPPPPPPPPP is never called, is not like down");
 
         return false;
     }
 
     public boolean onDown(MotionEvent ev) {
-
         int position = getCellPosition(ev);
         if(G.DEBUG) Log.v( U.getTag(), position+ " onDown");
         play(position, ev );
-
         return true;
     }
 
@@ -133,26 +135,26 @@ public class WhoopeeGridListener implements
     public void play(int position, MotionEvent ev){
 
         float pressure = ev.getPressure();
-        float divisor= 26;
+        float divisor= 40;
         int xTriggerVal= 0;
         int yTriggerVal= 0;
-        int left = v.getLeft();       // the left edge of the view
-        int bottom = v.getBottom();   // the bottom of the view (measured from the top of the container)
-        int width = v.getWidth();     // width of the view - constant, set in GridView.LayoutParams
-        int height = v.getHeight();   // hight
+        int left = mView.getLeft();       // the left edge of the view
+        int bottom = mView.getBottom();   // the bottom of the view (measured from the top of the container)
+        int width = mView.getWidth();     // width of the view - constant, set in GridView.LayoutParams
+        int height = mView.getHeight();   // hight
         int x = (int) ev.getX();      // the coordinates of the event in the container
         int y = (int) ev.getY();
 
 
         int xOffset =  x - left ;
         int yOffset =  bottom - y;
-        int xInterval = width / 50;  // the view is divided into equal intervals and  values mapped for each region
+        int xInterval = width / 100;  // the view is divided into equal intervals and  values mapped for each region
         int yInterval = height / 9; // because soundpool does not respond to volume and pitch values in a linear way
         xTriggerVal = xOffset / xInterval ;
         yTriggerVal = yOffset / yInterval ;
         float pitch = xTriggerVal/divisor;
 
-        //if (pitch > 2) pitch = 2;
+        if (pitch > 2.2) pitch = 2;
 
         if(G.G_DEBUG) Log.v( U.getTag(), "touch for sound trigger" +
                         "\nPressure:"+ pressure+
@@ -190,6 +192,12 @@ public class WhoopeeGridListener implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        YoYo.with(Techniques.Flash)
+                .duration(200)
+                .playOn(mView);
+
+
     }
 
 }

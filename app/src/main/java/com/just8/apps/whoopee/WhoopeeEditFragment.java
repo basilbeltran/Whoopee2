@@ -17,11 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.just8.apps.afilechooser.utils.FileUtils;
-
-import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class WhoopeeEditFragment extends Fragment {
     public static final String EXTRA_WHOOPEE_ID = "com.just8.apps.whoopee.whoopee_id";
@@ -222,9 +218,7 @@ public class WhoopeeEditFragment extends Fragment {
 
     public void save() {
         WhoopeeData.get().saveWhoopees();
-        mWhoopee.mSoundPool.release();
         if (G.DEBUG) Log.v(U.getTag(), "   " );
-
     }
 
     public void next() {
@@ -254,18 +248,18 @@ public class WhoopeeEditFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+
         if (G.DEBUG) Log.v(U.getTag(), "REQUEST_CODE:RESULT_CODE   " + requestCode+":"+resultCode);
         //todo if (resultCode != Activity.RESULT_OK) return;
 
         switch (requestCode) {
             case REQUEST_CODE_CHOOSE_IMAGE_FILE:
-                //mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
                 Uri image = data.getData();
                 mWhoopee.setSight(image, edit_cell_position);
                 mWhoopeeAdapter.notifyDataSetChanged();
                 break;
             case REQUEST_CODE_CHOOSE_SOUND_FILE:
-                //mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
                 Uri sound = data.getData();
                 mWhoopee.setSound(sound, edit_cell_position);
                 mWhoopee.activateSound();

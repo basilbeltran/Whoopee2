@@ -35,7 +35,7 @@ public class WhoopeeData {
             try {
                 mWhoopees = mObjects2JSON.loadObjectsFromJSON();
             } catch (Exception x) {
-                Log.e(U.getTag(), "Error using defult config, removing "+G.APPDIR  ,e);
+                Log.e(U.getTag(), "Error using defult config, REMOVING !!! "+G.APPDIR  ,e);
                 U.DeleteRecursive(new File(G.APPDIR));
             }
 
@@ -51,8 +51,9 @@ public class WhoopeeData {
         return mData;
     }
 
-    public static void reset() {
+    public static void reread() {
         mData = null;
+        mData = new WhoopeeData();
     }
 
     public ArrayList<Whoopee> getWhoopees(){
@@ -72,7 +73,7 @@ public class WhoopeeData {
         try {
             return mWhoopees.get(position);
         } catch (Exception e) {
-            Log.e(U.getTag(), "Incorrect config, ............uninstalling \n",e);
+            Log.e(U.getTag(), "whoopee not found Incorrect config, ............uninstalling!!",e);
             U.DeleteRecursive( new File(G.APPDIR));
         }
         return null;
@@ -95,7 +96,8 @@ public class WhoopeeData {
 
     public void addWhoopee(Whoopee c) {
         mWhoopees.add(c);
-        Log.d(U.getTag(), "added to mWhoopees \n" + c.getMWhoopeeName());
+        Log.d(U.getTag(), "ADDED to mWhoopees **************ArraySize:" + mWhoopees.size() + " : " + c.getMWhoopeeName());
+        saveWhoopees();
     }
 
     public void deleteWhoopee(Whoopee c) {
@@ -108,21 +110,11 @@ public class WhoopeeData {
             Log.d(U.getTag(), "writing mWhoopees to file. ArraySize:"+mWhoopees.size());
             String outfile = mObjects2JSON.saveObjects2JSON((ArrayList) mWhoopees);
             Log.d(U.getTag(), "mWhoopees saved to file \n" +outfile);
-            reset();
+            reread();
             return true;
         } catch (Exception e) {
             Log.e(U.getTag(), "Error saving mWhoopees: ", e);
             return false;
-        }
-    }
-
-    private void populate(){
-        for (int i = 0; i < 2; i++) {
-            Whoopee c = new Whoopee();
-            c.setMWhoopeeName("Whoopee #" + i);
-            c.setCategory("test");
-            c.setSolved(i % 2 == 0); // Every other one
-            mWhoopees.add(c);
         }
     }
 }

@@ -44,8 +44,9 @@ public class JsonFileManager {
                 in = new InputStreamReader(new FileInputStream(G.APPDIR + G.configJson));
             }
             else if(G.newInstall){
-                Log.d(U.getTag(), "READ ASSET STORAGE " + mFilename);
+                Log.d(U.getTag(), "READ ASSET STORAGE, NEW INSTALL SET FALSE, LOCAL CONFIG WILL NOW BE USED " + mFilename);
                 in = new InputStreamReader( G.CTX.getAssets().open(mFilename));
+                G.newInstall=false;
             }
             else{
                 Log.d(U.getTag(), "READ LOCAL STORAGE " + mFilename);

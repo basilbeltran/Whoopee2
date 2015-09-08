@@ -91,8 +91,10 @@ public class WhoopeePageFragment extends Fragment {
 
         mWhoopee = WhoopeeData.get().getWhoopee(mIndex);
         mWhoopee.activateSound();
-        mWhoopeeAdapter = new WhoopeeAdapter(mWhoopee);
-        mGridView.setAdapter(mWhoopeeAdapter);
+        mWhoopeeAdapter.notifyDataSetChanged();
+
+        //mWhoopeeAdapter = new WhoopeeAdapter(mWhoopee);
+        //mGridView.setAdapter(mWhoopeeAdapter);
     }
 
     private class WhoopeeAdapter extends BaseAdapter {
@@ -209,7 +211,6 @@ public class WhoopeePageFragment extends Fragment {
             case WhoopeeEditFragment.REQUEST_CODE_EDIT:
                 if (G.DEBUG) Log.v(U.getTag(), "refresh *************  ");
                 refresh();
-                mWhoopeeAdapter.notifyDataSetChanged();
                 break;
         }
     }

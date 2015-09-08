@@ -9,7 +9,7 @@
         android:layout_height="fill_parent"
         android:numColumns="4"
         android:stretchMode="columnWidth"
-        android:background="#9d0607"
+        android:background="#010101"
         android:gravity="fill"/>
 
 </RelativeLayout>

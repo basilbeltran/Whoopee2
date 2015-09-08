@@ -1,5 +1,55 @@
-after new, the return activity should not be default
-get onUp to work to quiet swipes
+
+
+
+The import AAR file method results in this....
+    compile project(':afilechooser-release')
+    compile project(':ringdroid-release')
+include ':app', ':afilechooser-release', ':ringdroid-release'
+
+
+https://github.com/kousen/ICNDB_AS  rest requests
+
+http://stackoverflow.com/questions/16588064/how-do-i-add-a-library-project-to-the-android-studio/16639227#16639227
+
+http://blog.teamtreehouse.com/android-libraries-use-every-project
+http://android-arsenal.com/free
+https://github.com/daimajia/AndroidViewAnimations
+github.com/excilys/androidannotations/wiki/Library-projects
+https://github.com/excilys/androidannotations/wiki
+
+
+actionBar take photo
+select from web
+android annotations
+
+Robotium for functional testing and RoboLectric for unit testing)
+
+see  ~/gradle sandbox example
+A project has one or more tasks to execute some actions,
+gradle -b sample_build.gradle failedTask test
+--continue
+--exclude-task
+--dry-run or -m
+--info
+--daemon
+--profile
+ --gui
+
+source sets
+
+
+various Gradle downloads will live in ~/.gradle/wrapper.)
+plugins set of predefined tasks
+
+    'com.android.support:support-v4:22.2.0'  group:artifact:version  maven style
+    compile project(':afilechooser-release')
+    compile project(':ringdroid-release')
+
+https://github.com/iPaulPro/aFileChooser
+
+ok new whoopee not getting added to file or array
+ok after new, the return activity should not be default
+no get onUp to work to quiet swipes, up triggers several times per touch
 
 
 onUp ??? so fling to next page doesnt sound a note
